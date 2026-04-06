@@ -15,7 +15,7 @@
 - Задание схемы: узлы `GND`, …, ветви между `node1` и `node2`, общий список именованных параметров (одно имя — один скаляр, можно переиспользовать в нескольких элементах).
 - Элементы: `Resistor`, `Capacitor`, `Inductor`, `Impedance` (R + jX), `VoltageSource`, `Crystal` (модель **BVD**: Rm, Lm, Cm, Cp), `CrystalLCC` (параллельное соединение ветвей L–C1 и C2).
 - Решатель: **MNA** (как в ноутбуке), `torch.linalg.solve`, батч по частоте, комплексные типы `complex64` / `complex128`.
-- Устройство вычислений: **`cpu`**, **`cuda`**. **`mps` не поддерживается** для AC/MNA (нет комплексной линейной алгебры на MPS в PyTorch).
+- Устройство вычислений: **`cpu`**, **`cuda`**.
 - Режим **target**: расчёт эталонной кривой и сохранение `target.npz`.
 - Режим **optimize**: подгонка обучаемых параметров под target, сдвиги `delta_f` / `delta_y` для target, L1/L2 по dBm, штраф за `|delta_y|`, линейная интерполяция target, маска вне диапазона частот.
 
@@ -143,7 +143,7 @@ python3 -m xtal_filters --help
 
 | Поле | Описание |
 |------|----------|
-| `device` | `cpu` \| `cuda`. **`mps` не использовать** — комплексная MNA на Apple MPS в текущем PyTorch недоступна; `ACAnalysis` выдаст ошибку. |
+| `device` | `cpu` \| `cuda` |
 | `lr` | Начальная скорость обучения Adam |
 | `lr_schedule` | опционально: `"cosine"` — после каждого шага снижение LR по косинусу (`torch.optim.lr_scheduler.CosineAnnealingLR`) от `lr` до `lr_min` за `num_steps` итераций |
 | `lr_min` | Нижняя граница LR при `lr_schedule: "cosine"` (по умолчанию `0`) |
@@ -340,7 +340,6 @@ run_optimization(cfg2, "examples/target_run/target.npz", "examples/out_opt")
 
 ## Замечания
 
-- **MPS**: режим **`device: mps`** не поддерживается: PyTorch на MPS не реализует комплексные матричные решения, нужные для MNA. Используйте **`cpu`** или **`cuda`**.
 - **CUDA**: при ошибках `torch.linalg.solve` на конкретной версии PyTorch переключитесь на **`cpu`**.
 - Сдвиг target: вне исходного диапазона частот target точки исключаются из среднего loss через маску (см. `interp.py`).
 - Репозиторий не использует SPICE в цикле оптимизации — только собственный MNA.

@@ -27,9 +27,9 @@
 
 Узкий масштаб по оси Y: **идеальный target**, **сдвинутый target** (малые обучаемые сдвиги по частоте и уровню) и **оптимизированная** лестница (~10.7 МГц, с учётом \(R_m\)). По вертикали — **dB на нагрузке относительно доступной мощности согласованного генератора Thevenin** (подробности в [документации](docs/DOCUMENTATION.md)).
 
-![Оптимизированная лестница и идеальный эталон (yzoom)](docs/assets/ladder_optimization_example.png)
+![Оптимизированная лестница и идеальный эталон (yzoom, анимация)](docs/assets/ladder_optimization_example.gif)
 
-*Рисунок: прогон в духе `examples/ladder_nonideal_opt` с акцентом loss на полосу; файл скопирован из `examples/ladder_opt_slope40/final_yzoom.png`.*
+*Анимация: прогон в духе `examples/ladder_nonideal_opt` с акцентом loss на полосу; файл скопирован из `examples/ladder_opt_slope40/optimization_yzoom.gif`.*
 
 ---
 
@@ -80,7 +80,7 @@ python3 scripts/rebuild_optimization_gif_yzoom.py \
   --save-final examples/my_run/final_yzoom.png
 ```
 
-Используйте **`optimization.device`: `cpu` или `cuda`**. **MPS (Apple)** для этого решателя **не поддерживается** (нет нужной комплексной линейной алгебры).
+Используйте **`optimization.device`: `cpu` или `cuda`**.
 
 ---
 

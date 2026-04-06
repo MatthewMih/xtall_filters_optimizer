@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 
 from xtal_filters.circuit import CircuitTopology, build_topology
-from xtal_filters.dtypes import complex_dtype, float_dtype_for_device
+from xtal_filters.dtypes import complex_dtype
 from xtal_filters.mna import assemble_mna, solve_mna_batch
 from xtal_filters.parameters import ParameterRegistry
 from xtal_filters.response import response_dbm_curve
@@ -19,15 +19,10 @@ class ACAnalysis(nn.Module):
         super().__init__()
         self.cfg = cfg
         self.top = build_topology(cfg)
-        self._float_dtype = float_dtype_for_device(device)
+        self._float_dtype = torch.float64
         self.registry = ParameterRegistry.from_config_list(cfg["parameters"], param_dtype=self._float_dtype)
         self.device = device
         self.z_dtype = complex_dtype(z_dtype_name)
-        if device.type == "mps" and self.z_dtype in (torch.complex64, torch.complex128):
-            raise RuntimeError(
-                "ACAnalysis on MPS is not supported: PyTorch MPS does not implement complex "
-                "linear algebra needed for AC MNA. Use optimization.device: cpu or cuda."
-            )
         self.elem_names = [e.name for e in self.top.elements]
         self.elem2idx = {n: i for i, n in enumerate(self.elem_names)}
         self.node2idx = {n: i for i, n in enumerate(self.top.nodes)}
@@ -56,7 +51,7 @@ class ACAnalysis(nn.Module):
                 raise ValueError("response.input_series_resistor must be a Resistor element")
 
     def forward(self, f_hz: torch.Tensor) -> torch.Tensor:
-        """Returns dBm curve (n_freq,) same dtype/device as f_hz (float64 on CPU/CUDA, float32 on MPS).
+        """Returns dBm curve (n_freq,) float64 on same device as the module.
 
         При ``response.relative_to_input_power``: значение = dBm(нагрузка) − dBm(P_avail),
         где P_avail = E²/(8R) — доступная мощность (E — пик фазора VoltageSource,

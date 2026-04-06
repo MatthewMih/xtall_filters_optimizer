@@ -5,7 +5,7 @@ import numpy as np
 import torch
 
 from xtal_filters.config import load_json, validate_schema
-from xtal_filters.dtypes import float_dtype_for_device, pick_device
+from xtal_filters.dtypes import pick_device
 from xtal_filters.engine import ACAnalysis
 from xtal_filters.sweep import linear_freq_grid
 from xtal_filters.viz import plot_response, response_vertical_axis_label
@@ -18,7 +18,7 @@ def generate_target_artifacts(circuit_json: str | Path, out_dir: str | Path, dev
     cfg = load_json(circuit_json)
     validate_schema(cfg)
     dev = pick_device(device)
-    fd = float_dtype_for_device(dev)
+    fd = torch.float64
     zname = cfg.get("sweep", {}).get("complex_dtype", "complex64")
     sw = cfg["sweep"]
     f_hz = linear_freq_grid(float(sw["f_min"]), float(sw["f_max"]), int(sw["num_points"]), dev, dtype=fd)

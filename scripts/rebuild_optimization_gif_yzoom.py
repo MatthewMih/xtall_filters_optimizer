@@ -24,7 +24,7 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 from xtal_filters.config import load_json, validate_schema
-from xtal_filters.dtypes import float_dtype_for_device, pick_device
+from xtal_filters.dtypes import pick_device
 from xtal_filters.engine import ACAnalysis
 from xtal_filters.sweep import linear_freq_grid
 from xtal_filters.viz import (
@@ -98,7 +98,7 @@ def main() -> None:
         raise SystemExit(f"Нет {target_npz}")
 
     device = pick_device(args.device)
-    fd = float_dtype_for_device(device)
+    fd = torch.float64
     zname = cfg.get("sweep", {}).get("complex_dtype", "complex64")
     sw = cfg["sweep"]
     f_opt = linear_freq_grid(float(sw["f_min"]), float(sw["f_max"]), int(sw["num_points"]), device, dtype=fd)

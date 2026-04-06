@@ -27,9 +27,9 @@ You still need physically realizable parts and sensible starting values; the opt
 
 Narrow Y-axis plot: **ideal target**, **shifted target** (learnable small frequency / level alignment), and **optimized** ladder response (~10.7 MHz example, motional resistance included). Vertical scale is **dB on load relative to available power from a matched Thevenin source** (see documentation).
 
-![Optimized ladder vs ideal target (yzoom)](docs/assets/ladder_optimization_example.png)
+![Optimized ladder vs ideal target (yzoom animation)](docs/assets/ladder_optimization_example.gif)
 
-*Figure: `examples/ladder_nonideal_opt`-style run with passband-focused loss weighting; asset copied from `examples/ladder_opt_slope40/final_yzoom.png`.*
+*Animation: same style as `examples/ladder_nonideal_opt` with passband-focused loss weighting; asset copied from `examples/ladder_opt_slope40/optimization_yzoom.gif`.*
 
 ---
 
@@ -83,7 +83,7 @@ python3 scripts/rebuild_optimization_gif_yzoom.py \
   --save-final examples/my_run/final_yzoom.png
 ```
 
-Use **`optimization.device`: `cpu` or `cuda`**. Apple **MPS is not supported** for this AC solver (complex linear algebra).
+Use **`optimization.device`: `cpu` or `cuda`**.
 
 ---
 

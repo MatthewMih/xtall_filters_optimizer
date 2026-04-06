@@ -10,7 +10,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from xtal_filters.dtypes import float_dtype_for_device, pick_device
+from xtal_filters.dtypes import pick_device
 from xtal_filters.engine import ACAnalysis
 from xtal_filters.interp import shifted_target_raw, shifted_target_values
 from xtal_filters.loss import masked_weighted_response_loss
@@ -139,7 +139,7 @@ def run_optimization(
         np.random.seed(opt_cfg.seed)
 
     device = pick_device(opt_cfg.device)
-    fd = float_dtype_for_device(device)
+    fd = torch.float64
     zname = circuit_cfg.get("sweep", {}).get("complex_dtype", opt_cfg.complex_dtype)
 
     data = np.load(target_path)
