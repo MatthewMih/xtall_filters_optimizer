@@ -1,6 +1,6 @@
 # xtal_filters_optimizer
 
-Исходный код и документация: [github.com/MatthewMih/xtall_filters_optimizer](https://github.com/MatthewMih/xtall_filters_optimizer).
+Исходный код и документация: [github.com/MatthewMih/crystal-rf-filter-optimizer](https://github.com/MatthewMih/crystal-rf-filter-optimizer).
 
 Исследовательский фреймворк на **PyTorch** для расчёта линейных цепей переменного тока по описанию в **JSON**, сравнения АЧХ в **dBm на нагрузке** и **дифференцируемой оптимизации** параметров (Adam, опционально LBFGS) с сохранением графиков и GIF.
 
@@ -119,8 +119,8 @@ python3 -m xtal_filters --help
 
 | Поле | Описание |
 |------|----------|
-| `relative_to_input_power` | `false` (по умолчанию) — **dBm** мощности на нагрузке. `true` — **разность в dB**: dBm(нагрузка) − dBm(\(P_\mathrm{avail}\)), где \(P_\mathrm{avail} = E^2/(4R)\) — максимальная средняя мощность, которую может отдать Thevenin-генератор с ЭДС \(E\) и внутренним сопротивлением \(R\) при **идеальном согласовании** нагрузки (\(R_\mathrm{load}=R\)). Эквивалентно \(10\log_{10}(P_\mathrm{load}/P_\mathrm{avail})\). |
-| `input_series_resistor` | Имя ветви **`Resistor`**, задающего внутреннее сопротивление \(R\) в формуле \(E^2/(4R)\) (тот же параметр, что и в схеме, например `Rs` с `Rport`). Обязателен, если `relative_to_input_power` = `true`. ЭДС \(E\) берётся из элемента `voltage_source` (параметр `E`). |
+| `relative_to_input_power` | `false` (по умолчанию) — **dBm** мощности на нагрузке. `true` — **разность в dB**: dBm(нагрузка) − dBm(\(P_\mathrm{avail}\)), где \(P_\mathrm{avail} = E^2/(8R)\): максимальная **средняя** мощность при согласовании, если **\(E\)** — **пиковая** амплитуда фазора в `VoltageSource` (согласовано с \(P_\mathrm{load} = \frac{1}{2}\mathrm{Re}(VI^*)\) на нагрузке). Для **RMS**-амплитуды было бы \(E_\mathrm{rms}^2/(4R)\). Эквивалентно \(10\log_{10}(P_\mathrm{load}/P_\mathrm{avail})\). |
+| `input_series_resistor` | Имя ветви **`Resistor`** с внутренним \(R\) в формуле \(E^2/(8R)\) (тот же параметр, что в схеме, например `Rs` / `Rport`). Обязателен при `relative_to_input_power` = `true`. \(E\) — из `voltage_source`. |
 
 ```json
 "response": {
@@ -138,7 +138,9 @@ python3 -m xtal_filters --help
 | Поле | Описание |
 |------|----------|
 | `device` | `cpu` \| `cuda` \| `mps` |
-| `lr` | Скорость обучения Adam |
+| `lr` | Начальная скорость обучения Adam |
+| `lr_schedule` | опционально: `"cosine"` — после каждого шага снижение LR по косинусу (`torch.optim.lr_scheduler.CosineAnnealingLR`) от `lr` до `lr_min` за `num_steps` итераций |
+| `lr_min` | Нижняя граница LR при `lr_schedule: "cosine"` (по умолчанию `0`) |
 | `num_steps` | Число шагов Adam |
 | `log_every` | Интервал записи в лог (каждый k-й шаг) |
 | `gif_every` | Интервал кадров GIF |
@@ -224,7 +226,7 @@ python3 -m xtal_filters --help
 
 Нагрузка может быть любого сопротивления — оно задаётся параметром резистора `load_element`.
 
-При **`response.relative_to_input_power`: true** по оси — **разность** dBm(нагрузка) и dBm(\(E^2/(4R)\)), т.е. отклик относительно **референса согласованного генератора** (не абсолютная мощность в мВт). Подписи: «dB (load − matched gen.)».
+При **`response.relative_to_input_power`: true** по оси — **разность** dBm(нагрузка) и dBm(\(E^2/(8R)\)) при **пиковом** \(E\) в MNA (не абсолютная мощность в мВт). Подписи: «dB (load − matched gen.)».
 
 ## Командная строка
 

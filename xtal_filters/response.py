@@ -44,9 +44,11 @@ def matched_thevenin_available_power_watts(
     series_resistor_name: str,
 ) -> torch.Tensor:
     """
-    Максимальная средняя активная мощность, доступная от Thevenin (E, R),
-    при идеальном согласовании нагрузки: P_avail = E² / (4R).
-    E и R берутся из текущих физических параметров ветвей (дифференцируемо).
+    Максимальная средняя мощность от Thevenin (E, R) при согласовании R_load = R.
+
+    Параметр E в VoltageSource — пиковая амплитуда фазора (как в MNA и в
+    avg_power_watts = 0.5·Re(V·I*)). Тогда P_avail = E²/(8R). Формула E²/(4R)
+    соответствовала бы RMS-амплитуде E_rms = E_peak/√2.
     """
     vs = next(e for e in top.elements if e.name == voltage_source_name)
     rs = next(e for e in top.elements if e.name == series_resistor_name)
@@ -56,7 +58,7 @@ def matched_thevenin_available_power_watts(
         raise ValueError("input_series_resistor must be a Resistor element")
     E = resolve_params(vs.params, phys)["E"]
     R = resolve_params(rs.params, phys)["R"]
-    return (E * E) / (4.0 * torch.clamp(R, min=1e-300))
+    return (E * E) / (8.0 * torch.clamp(R, min=1e-300))
 
 
 def response_dbm_curve(

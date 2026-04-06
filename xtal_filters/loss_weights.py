@@ -27,7 +27,7 @@ def compute_shifted_pred_max_weights(
     w_peak = float(spec.get("w_peak", 1.0))
     w_min = float(spec.get("w_min", 1e-8))
     dt, dev = pred.dtype, pred.device
-    neg_inf = torch.tensor(-1e300, device=dev, dtype=dt)
+    neg_inf = torch.tensor(torch.finfo(dt).min, device=dev, dtype=dt)
     y_for_max = torch.where(mask, y_shifted_raw, neg_inf)
     y_peak = torch.max(y_for_max)
     level = torch.maximum(pred, y_shifted_raw)

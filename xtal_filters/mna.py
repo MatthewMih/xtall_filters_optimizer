@@ -31,7 +31,8 @@ def assemble_mna(
     n_eq = num_elems + num_nodes
 
     device = f_hz.device
-    omega = 2 * torch.pi * f_hz.to(torch.float64)
+    two_pi = torch.tensor(2.0 * 3.141592653589793, device=device, dtype=f_hz.dtype)
+    omega = two_pi * f_hz
     n_freq = f_hz.shape[0]
 
     incidence = build_node_incidence(top)

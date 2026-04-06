@@ -11,16 +11,18 @@ def z_resistor(R: torch.Tensor, omega: torch.Tensor, z_dtype: torch.dtype) -> to
 
 def z_capacitor(C: torch.Tensor, omega: torch.Tensor, z_dtype: torch.dtype) -> torch.Tensor:
     # Z = 1/(j omega C)
-    o = omega.to(torch.float64)
-    c = C.to(torch.float64)
+    rd = omega.dtype
+    o = omega.to(rd)
+    c = C.to(rd)
     inv_z_imag = o * c  # 1/Xc magnitude for imag part: Z = -j/(omega C)
     z_imag = -1.0 / torch.clamp(inv_z_imag, min=1e-300)
     return z_imag.to(z_dtype) * 1j
 
 
 def z_inductor(L: torch.Tensor, omega: torch.Tensor, z_dtype: torch.dtype) -> torch.Tensor:
-    o = omega.to(torch.float64)
-    l = L.to(torch.float64)
+    rd = omega.dtype
+    o = omega.to(rd)
+    l = L.to(rd)
     return (o * l).to(z_dtype) * 1j
 
 

@@ -10,7 +10,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from xtal_filters.dtypes import pick_device
+from xtal_filters.dtypes import float_dtype_for_device, pick_device
 from xtal_filters.engine import ACAnalysis
 from xtal_filters.interp import shifted_target_raw, shifted_target_values
 from xtal_filters.loss import masked_weighted_response_loss
@@ -40,6 +40,8 @@ class OptimizationConfig:
     seed: int | None = 42
     loss_weighting: dict[str, Any] | None = None
     params_snapshot_every: int = 0
+    lr_schedule: str | None = None
+    lr_min: float = 0.0
 
 
 def _load_opt_section(cfg: dict[str, Any]) -> OptimizationConfig:
@@ -62,6 +64,8 @@ def _load_opt_section(cfg: dict[str, Any]) -> OptimizationConfig:
         seed=o.get("seed"),
         loss_weighting=o.get("loss_weighting"),
         params_snapshot_every=int(o.get("params_snapshot_every", 0)),
+        lr_schedule=o.get("lr_schedule"),
+        lr_min=float(o.get("lr_min", 0.0)),
     )
 
 
@@ -80,8 +84,9 @@ class OptimizationProblem(nn.Module):
         self.register_buffer("y_target", y_target)
         self.register_buffer("f_opt", f_opt)
         self.cfg = opt
-        self.delta_f = nn.Parameter(torch.zeros(1, dtype=torch.float64))
-        self.delta_y = nn.Parameter(torch.zeros(1, dtype=torch.float64))
+        fd = f_opt.dtype
+        self.delta_f = nn.Parameter(torch.zeros(1, dtype=fd, device=f_opt.device))
+        self.delta_y = nn.Parameter(torch.zeros(1, dtype=fd, device=f_opt.device))
         if not opt.enable_delta_f:
             self.delta_f.requires_grad_(False)
         if not opt.enable_delta_y:
@@ -92,7 +97,7 @@ class OptimizationProblem(nn.Module):
             lw and lw.get("mode") == "shifted_pred_max_decay"
         )
         fw = build_frequency_loss_weights(
-            f_opt, f_target, y_target, opt.loss_weighting, f_opt.device, dtype=torch.float64
+            f_opt, f_target, y_target, opt.loss_weighting, f_opt.device, dtype=f_opt.dtype
         )
         self.register_buffer("freq_loss_weight", fw)
 
@@ -134,14 +139,15 @@ def run_optimization(
         np.random.seed(opt_cfg.seed)
 
     device = pick_device(opt_cfg.device)
+    fd = float_dtype_for_device(device)
     zname = circuit_cfg.get("sweep", {}).get("complex_dtype", opt_cfg.complex_dtype)
 
     data = np.load(target_path)
-    f_t = torch.as_tensor(data["freqs_hz"], dtype=torch.float64, device=device)
-    y_t = torch.as_tensor(data["dbm"], dtype=torch.float64, device=device)
+    f_t = torch.as_tensor(data["freqs_hz"], dtype=fd, device=device)
+    y_t = torch.as_tensor(data["dbm"], dtype=fd, device=device)
 
     sw = circuit_cfg["sweep"]
-    f_opt = linear_freq_grid(float(sw["f_min"]), float(sw["f_max"]), int(sw["num_points"]), device)
+    f_opt = linear_freq_grid(float(sw["f_min"]), float(sw["f_max"]), int(sw["num_points"]), device, dtype=fd)
     plot_ylabel = response_vertical_axis_label(circuit_cfg)
 
     analysis = ACAnalysis(circuit_cfg, device=device, z_dtype_name=zname).to(device)
@@ -165,12 +171,21 @@ def run_optimization(
         params_dir.mkdir(parents=True, exist_ok=True)
 
     optimizer = torch.optim.Adam(params, lr=opt_cfg.lr)
+    scheduler: torch.optim.lr_scheduler.LRScheduler | None = None
+    if opt_cfg.lr_schedule == "cosine":
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer, T_max=opt_cfg.num_steps, eta_min=opt_cfg.lr_min
+        )
+    elif opt_cfg.lr_schedule:
+        raise ValueError(f"Unknown lr_schedule: {opt_cfg.lr_schedule!r} (supported: 'cosine')")
 
     for it in tqdm(range(opt_cfg.num_steps), desc="optimize", unit="step"):
         optimizer.zero_grad()
         loss, loss_resp, pred, mask = prob()
         loss.backward()
         optimizer.step()
+        if scheduler is not None:
+            scheduler.step()
 
         with torch.no_grad():
             pred_log = prob.analysis(f_opt)
@@ -179,15 +194,16 @@ def run_optimization(
             dy_v = float(prob.delta_y.cpu()) if opt_cfg.enable_delta_y else 0.0
 
         if it % opt_cfg.log_every == 0 or it == opt_cfg.num_steps - 1:
-            log_rows.append(
-                {
-                    "step": it,
-                    "loss": lv,
-                    "loss_resp": float(loss_resp.detach().cpu()),
-                    "delta_f_hz": df_v,
-                    "delta_y_db": dy_v,
-                }
-            )
+            row: dict[str, Any] = {
+                "step": it,
+                "loss": lv,
+                "loss_resp": float(loss_resp.detach().cpu()),
+                "delta_f_hz": df_v,
+                "delta_y_db": dy_v,
+            }
+            if scheduler is not None:
+                row["lr"] = float(optimizer.param_groups[0]["lr"])
+            log_rows.append(row)
 
         if snap_every > 0 and (it % snap_every == 0 or it == opt_cfg.num_steps - 1):
             snap = {k: float(v.detach().cpu()) for k, v in prob.analysis.registry.physical_dict().items()}

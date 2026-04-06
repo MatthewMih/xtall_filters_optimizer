@@ -23,3 +23,10 @@ def pick_device(name: str) -> torch.device:
             raise RuntimeError("MPS requested but not available")
         return torch.device("mps")
     raise ValueError(f"Unknown device: {name}")
+
+
+def float_dtype_for_device(device: torch.device) -> torch.dtype:
+    """MPS does not support float64; use float32 there."""
+    if device.type == "mps":
+        return torch.float32
+    return torch.float64

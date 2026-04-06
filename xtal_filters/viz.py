@@ -13,7 +13,7 @@ from PIL import Image
 
 
 def response_vertical_axis_label(cfg: dict[str, Any]) -> str:
-    """Подпись оси Y для кривых отклика (абсолютный dBm на нагрузке или относительно P_avail=E²/(4R))."""
+    """Подпись оси Y (абсолютный dBm на нагрузке или относительно P_avail=E²/(8R), E — пик)."""
     r = cfg.get("response") or {}
     if r.get("relative_to_input_power"):
         return "dB (load − matched gen.)"

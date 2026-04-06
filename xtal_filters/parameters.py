@@ -22,7 +22,7 @@ class ParamSpec:
 class ParameterRegistry(nn.Module):
     """Named physical parameters; trainable ones stored as raw nn.Parameters."""
 
-    def __init__(self, params: list[ParamSpec]):
+    def __init__(self, params: list[ParamSpec], param_dtype: torch.dtype = torch.float64):
         super().__init__()
         self._specs: dict[str, ParamSpec] = {p.name: p for p in params}
         self._buffers: dict[str, torch.Tensor] = {}
@@ -32,11 +32,11 @@ class ParameterRegistry(nn.Module):
             if p.trainable:
                 raw0 = initialize_raw(p.value, p.kind)
                 self.register_parameter(
-                    f"_raw_{p.name}", nn.Parameter(torch.tensor(raw0, dtype=torch.float64))
+                    f"_raw_{p.name}", nn.Parameter(torch.tensor(raw0, dtype=param_dtype))
                 )
                 self._trainable_names.append(p.name)
             else:
-                t = torch.tensor(float(p.value), dtype=torch.float64)
+                t = torch.tensor(float(p.value), dtype=param_dtype)
                 self.register_buffer(f"_fixed_{p.name}", t)
 
     def physical_dict(self) -> dict[str, torch.Tensor]:
@@ -72,7 +72,9 @@ class ParameterRegistry(nn.Module):
                 getattr(self, f"_fixed_{name}").fill_(val)
 
     @staticmethod
-    def from_config_list(raw_list: list[dict[str, Any]]) -> "ParameterRegistry":
+    def from_config_list(
+        raw_list: list[dict[str, Any]], param_dtype: torch.dtype = torch.float64
+    ) -> "ParameterRegistry":
         specs: list[ParamSpec] = []
         for d in raw_list:
             kind = d.get("kind", "generic")
@@ -88,4 +90,4 @@ class ParameterRegistry(nn.Module):
                     max=float(d["max"]) if d.get("max") is not None else None,
                 )
             )
-        return ParameterRegistry(specs)
+        return ParameterRegistry(specs, param_dtype=param_dtype)
