@@ -1,0 +1,63 @@
+{
+  "nodes": ["GND", "NS", "N0", "N1", "N2", "N3", "N4", "N5", "N6", "N7", "N8", "N9", "N10", "N11", "N12", "N13", "N14"],
+  "voltage_source": "V1",
+  "load_element": "RL",
+  "parameters": [
+    {"name": "E", "value": 1.0, "trainable": false, "kind": "generic"},
+    {"name": "Rs", "value": 449, "trainable": false, "kind": "resistance"},
+    {"name": "RL", "value": 449, "trainable": false, "kind": "resistance"},
+    {"name": "Cap1", "value": 42e-12, "trainable": false, "kind": "capacitance"},
+    {"name": "Cap2", "value": 32.7e-12, "trainable": false, "kind": "capacitance"},
+    {"name": "Cap3", "value": 42e-12, "trainable": false, "kind": "capacitance"},
+    {"name": "Cap4", "value": 128.2e-12, "trainable": false, "kind": "capacitance"},
+    {"name": "Cap5", "value": 44e-12, "trainable": false, "kind": "capacitance"},
+    {"name": "Cap6", "value": 110.4e-12, "trainable": false, "kind": "capacitance"},
+    {"name": "Cap7", "value": 44.4e-12, "trainable": false, "kind": "capacitance"},
+    {"name": "Cap8", "value": 110.4e-12, "trainable": false, "kind": "capacitance"},
+    {"name": "Cap9", "value": 44e-12, "trainable": false, "kind": "capacitance"},
+    {"name": "Cap10", "value": 128.2e-12, "trainable": false, "kind": "capacitance"},
+    {"name": "Cap11", "value": 42e-12, "trainable": false, "kind": "capacitance"},
+    {"name": "Cap12", "value": 32.7e-12, "trainable": false, "kind": "capacitance"},
+    {"name": "Cap13", "value": 42e-12, "trainable": false, "kind": "capacitance"},
+    {"name": "Rm", "value": 0.0, "trainable": false, "kind": "resistance"},
+    {"name": "Lm", "value": 0.0303, "trainable": false, "kind": "inductance"},
+    {"name": "Cm", "value": 7.305e-15, "trainable": false, "kind": "capacitance"},
+    {"name": "Cp", "value": 2.5e-12, "trainable": false, "kind": "capacitance"}
+  ],
+  "elements": [
+    {"type": "VoltageSource", "name": "V1", "node1": "GND", "node2": "NS", "params": {"E": "E"}},
+    {"type": "Resistor", "name": "Rs", "node1": "NS", "node2": "N0", "params": {"R": "Rs"}},
+    {"type": "Capacitor", "name": "C1", "node1": "N0", "node2": "N1", "params": {"C": "Cap1"}},
+    {"type": "Crystal", "name": "X1", "node1": "N1", "node2": "N2", "params": {"Rm": "Rm", "Lm": "Lm", "Cm": "Cm", "Cp": "Cp"}},
+    {"type": "Capacitor", "name": "C2", "node1": "N2", "node2": "GND", "params": {"C": "Cap2"}},
+    {"type": "Crystal", "name": "X2", "node1": "N2", "node2": "N3", "params": {"Rm": "Rm", "Lm": "Lm", "Cm": "Cm", "Cp": "Cp"}},
+    {"type": "Capacitor", "name": "C3", "node1": "N3", "node2": "GND", "params": {"C": "Cap3"}},
+    {"type": "Crystal", "name": "X3", "node1": "N3", "node2": "N4", "params": {"Rm": "Rm", "Lm": "Lm", "Cm": "Cm", "Cp": "Cp"}},
+    {"type": "Capacitor", "name": "C4", "node1": "N4", "node2": "N5", "params": {"C": "Cap4"}},
+    {"type": "Capacitor", "name": "C5", "node1": "N5", "node2": "GND", "params": {"C": "Cap5"}},
+    {"type": "Crystal", "name": "X4", "node1": "N5", "node2": "N6", "params": {"Rm": "Rm", "Lm": "Lm", "Cm": "Cm", "Cp": "Cp"}},
+    {"type": "Capacitor", "name": "C6", "node1": "N6", "node2": "N7", "params": {"C": "Cap6"}},
+    {"type": "Capacitor", "name": "C7", "node1": "N7", "node2": "GND", "params": {"C": "Cap7"}},
+    {"type": "Capacitor", "name": "C8", "node1": "N7", "node2": "N8", "params": {"C": "Cap8"}},
+    {"type": "Crystal", "name": "X5", "node1": "N8", "node2": "N9", "params": {"Rm": "Rm", "Lm": "Lm", "Cm": "Cm", "Cp": "Cp"}},
+    {"type": "Capacitor", "name": "C9", "node1": "N9", "node2": "GND", "params": {"C": "Cap9"}},
+    {"type": "Capacitor", "name": "C10", "node1": "N9", "node2": "N10", "params": {"C": "Cap10"}},
+    {"type": "Crystal", "name": "X6", "node1": "N10", "node2": "N11", "params": {"Rm": "Rm", "Lm": "Lm", "Cm": "Cm", "Cp": "Cp"}},
+    {"type": "Capacitor", "name": "C11", "node1": "N11", "node2": "GND", "params": {"C": "Cap11"}},
+    {"type": "Crystal", "name": "X7", "node1": "N11", "node2": "N12", "params": {"Rm": "Rm", "Lm": "Lm", "Cm": "Cm", "Cp": "Cp"}},
+    {"type": "Capacitor", "name": "C12", "node1": "N12", "node2": "GND", "params": {"C": "Cap12"}},
+    {"type": "Crystal", "name": "X8", "node1": "N12", "node2": "N13", "params": {"Rm": "Rm", "Lm": "Lm", "Cm": "Cm", "Cp": "Cp"}},
+    {"type": "Capacitor", "name": "C13", "node1": "N13", "node2": "N14", "params": {"C": "Cap13"}},
+    {"type": "Resistor", "name": "RL", "node1": "N14", "node2": "GND", "params": {"R": "RL"}}
+  ],
+  "response": {
+    "relative_to_input_power": true,
+    "input_series_resistor": "Rs"
+  },
+  "sweep": {
+    "f_min": 10696000,
+    "f_max": 10702000,
+    "num_points": 4000,
+    "complex_dtype": "complex64"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "nodes": ["GND", "NS", "IN", "P1", "OUT"],
+  "voltage_source": "V1",
+  "load_element": "RL",
+  "parameters": [
+    {"name": "E", "value": 1.0, "trainable": false, "kind": "generic"},
+    {"name": "Rs", "value": 45, "trainable": true, "kind": "resistance", "min": 5, "max": 150},
+    {"name": "RL", "value": 55, "trainable": true, "kind": "resistance", "min": 5, "max": 150},
+    {"name": "C1", "value": 10e-12, "trainable": true, "kind": "capacitance", "min": 1e-15, "max": 100e-12},
+    {"name": "L1", "value": 2e-6, "trainable": false, "kind": "inductance"},
+    {"name": "Rm", "value": 4000, "trainable": true, "kind": "resistance", "min": 0.01, "max": 20000},
+    {"name": "Lm", "value": 1.3e-3, "trainable": false, "kind": "inductance"},
+    {"name": "Cm", "value": 4.8e-14, "trainable": false, "kind": "capacitance"},
+    {"name": "Cp", "value": 1.5e-12, "trainable": false, "kind": "capacitance"}
+  ],
+  "elements": [
+    {"type": "VoltageSource", "name": "V1", "node1": "GND", "node2": "NS", "params": {"E": "E"}},
+    {"type": "Resistor", "name": "Rs", "node1": "NS", "node2": "IN", "params": {"R": "Rs"}},
+    {"type": "Capacitor", "name": "C1", "node1": "IN", "node2": "P1", "params": {"C": "C1"}},
+    {"type": "Inductor", "name": "L1", "node1": "P1", "node2": "OUT", "params": {"L": "L1"}},
+    {"type": "Crystal", "name": "X1", "node1": "P1", "node2": "GND", "params": {"Rm": "Rm", "Lm": "Lm", "Cm": "Cm", "Cp": "Cp"}},
+    {"type": "Resistor", "name": "RL", "node1": "OUT", "node2": "GND", "params": {"R": "RL"}}
+  ],
+  "sweep": {
+    "f_min": 2e6,
+    "f_max": 8e6,
+    "num_points": 256,
+    "complex_dtype": "complex64"
+  },
+  "optimization": {
+    "device": "cpu",
+    "optimizer": "adam",
+    "lr": 0.08,
+    "num_steps": 150,
+    "log_every": 5,
+    "gif_every": 15,
+    "loss_type": "l1",
+    "lambda_y_shift": 0.05,
+    "enable_delta_f": true,
+    "enable_delta_y": true,
+    "adam_then_lbfgs": false,
+    "seed": 0,
+    "output_dir": "examples/out_opt"
+  }
+}

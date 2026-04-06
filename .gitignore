@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+venv/
+.venv/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# Сгенерированные прогоны (см. README — target / optimize / yzoom)
+examples/**/*.npz
+examples/**/*.gif
+examples/**/*.png
+examples/**/params_frames/
+examples/**/optimization_log.json
+examples/**/parameters_final.json
+examples/**/trainable.json
