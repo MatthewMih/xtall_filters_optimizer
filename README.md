@@ -7,7 +7,7 @@
 ## Возможности
 
 - Задание схемы: узлы `GND`, …, ветви между `node1` и `node2`, общий список именованных параметров (одно имя — один скаляр, можно переиспользовать в нескольких элементах).
-- Элементы: `Resistor`, `Capacitor`, `Inductor`, `Impedance` (R + jX), `VoltageSource`, `Crystal` (модель **BVD**: Rm, Lm, Cm, Cp), `CrystalLCC` (как в `uni_linalg.ipynb`: параллельное соединение ветвей L–C1 и C2).
+- Элементы: `Resistor`, `Capacitor`, `Inductor`, `Impedance` (R + jX), `VoltageSource`, `Crystal` (модель **BVD**: Rm, Lm, Cm, Cp), `CrystalLCC` (параллельное соединение ветвей L–C1 и C2).
 - Решатель: **MNA** (как в ноутбуке), `torch.linalg.solve`, батч по частоте, комплексные типы `complex64` / `complex128`.
 - Устройство вычислений: `cpu`, `cuda`, `mps`.
 - Режим **target**: расчёт эталонной кривой и сохранение `target.npz`.
@@ -335,7 +335,3 @@ run_optimization(cfg2, "examples/target_run/target.npz", "examples/out_opt")
 - **CUDA / MPS**: для комплексных `torch.linalg.solve` возможны ограничения версии PyTorch; при ошибке используйте `device: cpu`.
 - Сдвиг target: вне исходного диапазона частот target точки исключаются из среднего loss через маску (см. `interp.py`).
 - Репозиторий не использует SPICE в цикле оптимизации — только собственный MNA.
-
-## Связанные файлы
-
-- [`uni_linalg.ipynb`](uni_linalg.ipynb) — исходная постановка MNA и пример кварца `CrystalLCC`.
