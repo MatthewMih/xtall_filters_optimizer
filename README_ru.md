@@ -5,7 +5,7 @@
 Инструмент для **подбора параметров лестничных полосовых кварцевых фильтров** так, чтобы их **АЧХ была близка к характеристике идеального фильтра** даже при наличии потерь в резонаторах. Программа позволяет скомпенсировать влияние неидеальности кварцевых резонаторов, которое обычно не учитывается в методах типа Dishal и приводит к значительному искажению формы АЧХ.
 
 **Репозиторий:** [github.com/MatthewMih/crystal-rf-filter-optimizer](https://github.com/MatthewMih/crystal-rf-filter-optimizer)  
-**Автор:** Matthew Mih  
+**Автор:** Matvey Mikhalchuk — [mikhalchuk.matvey@gmail.com](mailto:mikhalchuk.matvey@gmail.com)  
 **Полная техническая документация (формат JSON, CLI, API, веса loss):** [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md)
 
 ---

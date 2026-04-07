@@ -5,7 +5,7 @@
 A **PyTorch** tool for **tuning ladder bandpass crystal filters** so their **frequency response follows an ideal reference** even when resonators are **lossy**. It compensates for crystal non-ideality that **Dishal-style synthesis usually skips**—and that otherwise **distorts passband shape** (narrower band, worse flatness, extra loss).
 
 **Repository:** [github.com/MatthewMih/crystal-rf-filter-optimizer](https://github.com/MatthewMih/crystal-rf-filter-optimizer)  
-**Author:** Matthew Mih  
+**Author:** Matvey Mikhalchuk — [mikhalchuk.matvey@gmail.com](mailto:mikhalchuk.matvey@gmail.com)  
 **Full reference (JSON schema, CLI, API, loss weighting — Russian):** [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md)
 
 ---

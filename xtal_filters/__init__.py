@@ -1,11 +1,11 @@
 """JSON-driven quartz filter AC analysis and differentiable optimization.
 
-Author: Matthew Mih
+Author: Matvey Mikhalchuk <mikhalchuk.matvey@gmail.com>
 Repository: https://github.com/MatthewMih/crystal-rf-filter-optimizer
 """
 
 __version__ = "0.1.0"
-__author__ = "Matthew Mih"
+__author__ = "Matvey Mikhalchuk <mikhalchuk.matvey@gmail.com>"
 
 from xtal_filters.engine import ACAnalysis
 from xtal_filters.optimize import OptimizationConfig, run_optimization
