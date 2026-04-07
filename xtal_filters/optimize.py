@@ -264,6 +264,7 @@ def run_optimization(
         final_response.cpu().numpy(),
         df_final,
         dy_final,
+        y_initial=initial_response.cpu().numpy(),
         ylabel=plot_ylabel,
     )
     if gif_frames:

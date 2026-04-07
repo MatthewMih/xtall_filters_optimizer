@@ -288,7 +288,7 @@ python3 scripts/rebuild_optimization_gif_yzoom.py \
 | `trainable.json` | Только обучаемые параметры |
 | `optimization_log.json` | История шагов: loss, `delta_f_hz`, `delta_y_db`, … |
 | `params_frames/` | При `params_snapshot_every` > 0 — JSON номиналов по шагам (нужны для yzoom-скрипта) |
-| `final.png` | Итоговый график: final / ideal target / shifted target |
+| `final.png` | Итоговый график: **initial** (до оптимизации), ideal target, shifted target, **final** |
 | `optimization.gif` | Анимация с авто-масштабом по Y |
 | `optimization_yzoom.gif` | Не создаётся оптимизатором; появляется после `rebuild_optimization_gif_yzoom.py` |
 | `final_yzoom.png` | То же, если передать `--save-final` в скрипт пересборки |

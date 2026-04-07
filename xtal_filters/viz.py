@@ -113,6 +113,7 @@ def save_final_plot(
     y_final: np.ndarray,
     delta_f_hz: float,
     delta_y_db: float,
+    y_initial: np.ndarray | None = None,
     y_lim: tuple[float, float] | None = None,
     ylabel: str = "dBm (load)",
 ) -> None:
@@ -120,6 +121,17 @@ def save_final_plot(
     fig, ax = plt.subplots(figsize=(7, 4.5), dpi=120)
     x_mhz = f_hz / 1e6
     y_tgt_on_f = _target_on_freq_grid(f_hz, f_tgt_hz, y_tgt)
+    if y_initial is not None:
+        ax.plot(
+            x_mhz,
+            y_initial,
+            "--",
+            color="#7f7f7f",
+            linewidth=1.5,
+            label="initial (pre-opt)",
+            zorder=1,
+            alpha=0.9,
+        )
     ax.plot(
         x_mhz,
         y_tgt_on_f,

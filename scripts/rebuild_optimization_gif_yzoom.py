@@ -153,6 +153,12 @@ def main() -> None:
         analysis.registry.load_physical_values(last)
         with torch.no_grad():
             y_final = analysis(f_opt).detach().cpu().numpy()
+        y_initial_np: np.ndarray | None = None
+        resp_npz = run_dir / "responses.npz"
+        if resp_npz.is_file():
+            rd = np.load(resp_npz)
+            if "initial" in rd.files:
+                y_initial_np = np.asarray(rd["initial"])
         save_final_plot(
             args.save_final,
             f_opt_np,
@@ -161,6 +167,7 @@ def main() -> None:
             y_final,
             float(last.get("delta_f_hz", 0.0)),
             float(last.get("delta_y_db", 0.0)),
+            y_initial=y_initial_np,
             y_lim=y_lim,
             ylabel=plot_ylabel,
         )
