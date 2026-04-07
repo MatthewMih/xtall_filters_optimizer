@@ -1,6 +1,6 @@
 **[Русская версия](README_ru.md)**
 
-# Crystal RF filter optimizer
+# Crystal bandpass filter optimizer
 
 A **PyTorch** tool for **tuning ladder bandpass crystal filters** so their **frequency response follows an ideal reference** even when resonators are **lossy**. It compensates for crystal non-ideality that **Dishal-style synthesis usually skips**—and that otherwise **distorts passband shape** (narrower band, worse flatness, extra loss).
 
