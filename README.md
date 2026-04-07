@@ -5,6 +5,7 @@
 A **PyTorch** tool for **tuning ladder bandpass crystal filters** so their **frequency response follows an ideal reference** even when resonators are **lossy**. It compensates for crystal non-ideality that **Dishal-style synthesis usually skips**—and that otherwise **distorts passband shape** (narrower band, worse flatness, extra loss).
 
 **Repository:** [github.com/MatthewMih/crystal-rf-filter-optimizer](https://github.com/MatthewMih/crystal-rf-filter-optimizer)  
+**Author:** Matthew Mih  
 **Full reference (JSON schema, CLI, API, loss weighting — Russian):** [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md)
 
 ---
@@ -25,13 +26,17 @@ You still need physically realizable parts and sensible starting values; the opt
 
 ## Example (after optimization)
 
-Narrow Y-axis view: **ideal target**, **shifted target** (small learnable frequency / level offsets), and the **optimized** ladder (~10.7 MHz, with finite \(R_m\)). The vertical axis is **dB at the load relative to available power from a matched Thevenin source** (see [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md)).
+How the **frequency response evolves** while optimizing capacitor values for a **~10.7 MHz Chebyshev-type ladder** (see [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md) for the dB axis: load power vs matched generator).
+
+- **target** (green) — ideal lossless reference  
+- **target shifted** (orange) — same reference with learnable frequency / level offset  
+- **current** (blue) — real lossy network **during** optimization  
 
 ![Optimization of a lossy filter toward the ideal target response](docs/assets/ladder_optimization_example.gif)
 
-*Animation: `examples/ladder_optimize.json` (750 steps, `shifted_pred_max_decay`, `slope_db: 20`); after running the quick start below, the same view is `examples/ladder_run/optimization_yzoom.gif`. The file in `docs/assets/` is a snapshot of that run.*
+*Animation: `examples/ladder_optimize.json` (750 steps, `shifted_pred_max_decay`, `slope_db: 20`); after the quick start below you get the same view in `examples/ladder_run/optimization_yzoom.gif`. The `docs/assets/` file is a snapshot of that run.*
 
-**Before → after (zoomed Y-axis):** the gray dashed **initial (pre-opt)** curve is the ladder with nominal parts and finite \(R_m\) *before* any optimization; **final** (blue) is after training. Green / orange are the ideal and shifted targets. This is the same run as above, in a tight dB window (see `rebuild_optimization_gif_yzoom.py`).
+**Before → after (zoomed Y-axis):** gray dashed **initial (pre-opt)** — response with nominal values and finite \(R_m\) *before* optimization (what you often get if you build from Dishal-style numbers without re-tuning for crystal loss); **final** (blue) — *after* fitting to the target. Green and orange — ideal lossless target without and with shift. The tight Y window comes from `rebuild_optimization_gif_yzoom.py`.
 
 ![Yzoom: initial vs final vs targets](docs/assets/ladder_final_yzoom.png)
 
