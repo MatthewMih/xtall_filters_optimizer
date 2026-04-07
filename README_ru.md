@@ -31,6 +31,12 @@
 
 *Анимация: конфиг `examples/ladder_optimize.json` (750 шагов, `shifted_pred_max_decay`, `slope_db: 20`); после быстрого старта ниже тот же вид — `examples/ladder_run/optimization_yzoom.gif`. В `docs/assets/` лежит снимок этого прогона.*
 
+**Было → стало (узкий масштаб по оси Y):** серая пунктирная **initial (pre-opt)** — АЧХ с номиналами и конечным \(R_m\) *до* оптимизации; **final** (синяя) — *после* подгонки к эталону. Зелёная / оранжевая — идеальный и сдвинутый target. Тот же прогон, что и в GIF, в «приближенном» окне по dB (скрипт `rebuild_optimization_gif_yzoom.py`).
+
+![Yzoom: исходная и итоговая АЧХ и эталоны](docs/assets/ladder_final_yzoom.png)
+
+*Кадр из `examples/ladder_run/final_yzoom.png`; копия в `docs/assets/` для отображения на GitHub.*
+
 ---
 
 ## Возможности (кратко)

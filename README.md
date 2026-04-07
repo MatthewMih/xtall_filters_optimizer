@@ -31,6 +31,12 @@ Narrow Y-axis view: **ideal target**, **shifted target** (small learnable freque
 
 *Animation: `examples/ladder_optimize.json` (750 steps, `shifted_pred_max_decay`, `slope_db: 20`); after running the quick start below, the same view is `examples/ladder_run/optimization_yzoom.gif`. The file in `docs/assets/` is a snapshot of that run.*
 
+**Before → after (zoomed Y-axis):** the gray dashed **initial (pre-opt)** curve is the ladder with nominal parts and finite \(R_m\) *before* any optimization; **final** (blue) is after training. Green / orange are the ideal and shifted targets. This is the same run as above, in a tight dB window (see `rebuild_optimization_gif_yzoom.py`).
+
+![Yzoom: initial vs final vs targets](docs/assets/ladder_final_yzoom.png)
+
+*Still frame from `examples/ladder_run/final_yzoom.png`; copy in `docs/assets/` for GitHub.*
+
 ---
 
 ## Features (short)
