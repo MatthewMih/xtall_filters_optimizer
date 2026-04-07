@@ -6,7 +6,7 @@ A **PyTorch** tool for **tuning ladder bandpass crystal filters** so their **fre
 
 **Repository:** [github.com/MatthewMih/crystal-rf-filter-optimizer](https://github.com/MatthewMih/crystal-rf-filter-optimizer)  
 **Author:** Matvey Mikhalchuk — [mikhalchuk.matvey@gmail.com](mailto:mikhalchuk.matvey@gmail.com)  
-**Full reference (JSON schema, CLI, API, loss weighting — Russian):** [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md)
+**Full reference (English):** [docs/DOCUMENTATION_en.md](docs/DOCUMENTATION_en.md)
 
 ---
 
@@ -26,7 +26,7 @@ You still need physically realizable parts and sensible starting values; the opt
 
 ## Example (after optimization)
 
-How the **frequency response evolves** while optimizing capacitor values for a **~10.7 MHz Chebyshev-type ladder** (see [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md) for the dB axis: load power vs matched generator).
+How the **frequency response evolves** while optimizing capacitor values for a **~10.7 MHz Chebyshev-type ladder** (see [docs/DOCUMENTATION_en.md](docs/DOCUMENTATION_en.md) for the dB axis: load power vs matched generator).
 
 - **target** (green) — ideal lossless reference  
 - **target shifted** (orange) — same reference with learnable frequency / level offset  
@@ -98,7 +98,8 @@ Use **`optimization.device`: `cpu` or `cuda`**.
 
 | Document | Content |
 |----------|---------|
-| [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md) | JSON schema, `response` / `optimization`, loss weighting modes, dBm definitions, artifacts, Python API |
+| [docs/DOCUMENTATION_en.md](docs/DOCUMENTATION_en.md) | JSON schema, `response` / `optimization`, loss weighting modes, dBm definitions, artifacts, Python API (English) |
+| [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md) | Same reference in Russian |
 | [README_ru.md](README_ru.md) | This page in Russian |
 
 ---

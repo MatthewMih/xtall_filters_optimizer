@@ -1,4 +1,6 @@
-# Техническая документация
+# Техническая документация (русский)
+
+[English version — DOCUMENTATION_en.md](DOCUMENTATION_en.md)
 
 Введение для радиолюбителей: [README.md](../README.md) (English) · [README_ru.md](../README_ru.md) (Русский)
 

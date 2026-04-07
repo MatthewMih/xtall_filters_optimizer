@@ -6,7 +6,7 @@
 
 **Репозиторий:** [github.com/MatthewMih/crystal-rf-filter-optimizer](https://github.com/MatthewMih/crystal-rf-filter-optimizer)  
 **Автор:** Matvey Mikhalchuk — [mikhalchuk.matvey@gmail.com](mailto:mikhalchuk.matvey@gmail.com)  
-**Полная техническая документация (формат JSON, CLI, API, веса loss):** [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md)
+**Полная техническая документация (русский):** [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md) · [English — DOCUMENTATION_en.md](docs/DOCUMENTATION_en.md)
 
 ---
 
@@ -99,7 +99,8 @@ python3 scripts/rebuild_optimization_gif_yzoom.py \
 
 | Файл | Содержание |
 |------|------------|
-| [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md) | Формат JSON, секции `response` / `optimization`, режимы весов, dBm, артефакты, API |
+| [docs/DOCUMENTATION.md](docs/DOCUMENTATION.md) | Формат JSON, секции `response` / `optimization`, режимы весов, dBm, артефакты, API (русский) |
+| [docs/DOCUMENTATION_en.md](docs/DOCUMENTATION_en.md) | Тот же справочник на английском |
 | [README.md](README.md) | Эта страница по-английски |
 
 ---
