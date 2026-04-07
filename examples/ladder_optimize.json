@@ -65,7 +65,7 @@
     "lr": 0.1,
     "lr_schedule": "cosine",
     "lr_min": 0.0,
-    "num_steps": 1500,
+    "num_steps": 750,
     "log_every": 20,
     "gif_every": 25,
     "params_snapshot_every": 25,
@@ -75,10 +75,10 @@
     "enable_delta_y": true,
     "adam_then_lbfgs": false,
     "seed": 1,
-    "output_dir": "examples/ladder_opt_slope40",
+    "output_dir": "examples/ladder_run",
     "loss_weighting": {
       "mode": "shifted_pred_max_decay",
-      "slope_db": 40,
+      "slope_db": 20,
       "w_peak": 1.0,
       "w_min": 1e-8
     }

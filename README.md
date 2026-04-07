@@ -29,7 +29,7 @@ Narrow Y-axis view: **ideal target**, **shifted target** (small learnable freque
 
 ![Optimization of a lossy filter toward the ideal target response](docs/assets/ladder_optimization_example.gif)
 
-*Animation: same workflow as `examples/ladder_nonideal_opt`, with passband-focused loss weighting (`shifted_pred_max_decay`); file copied from `examples/ladder_opt_slope20_750/optimization_yzoom.gif`.*
+*Animation: `examples/ladder_optimize.json` (750 steps, `shifted_pred_max_decay`, `slope_db: 20`); after running the quick start below, the same view is `examples/ladder_run/optimization_yzoom.gif`. The file in `docs/assets/` is a snapshot of that run.*
 
 ---
 
@@ -65,19 +65,18 @@ From the repo root:
 
 ```bash
 python3 -m xtal_filters target \
-  --config examples/ladder_10p696_10p702MHz.json \
-  --out examples/ladder_10p7MHz_out \
+  --config examples/ladder_ideal.json \
+  --out examples/ladder_target \
   --device cpu
 
 python3 -m xtal_filters optimize \
-  --config examples/ladder_nonideal_opt.json \
-  --target examples/ladder_10p7MHz_out/target.npz \
-  --out examples/my_run
+  --config examples/ladder_optimize.json \
+  --target examples/ladder_target/target.npz
 
 python3 scripts/rebuild_optimization_gif_yzoom.py \
-  --config examples/ladder_nonideal_opt.json \
-  --run-dir examples/my_run \
-  --save-final examples/my_run/final_yzoom.png
+  --config examples/ladder_optimize.json \
+  --run-dir examples/ladder_run \
+  --save-final examples/ladder_run/final_yzoom.png
 ```
 
 Use **`optimization.device`: `cpu` or `cuda`**.

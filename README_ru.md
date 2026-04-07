@@ -29,7 +29,7 @@
 
 ![Процесс оптимизации фильтра с потерями к АЧХ идеального эталона](docs/assets/ladder_optimization_example.gif)
 
-*Анимация: прогон в духе `examples/ladder_nonideal_opt` с акцентом loss на полосу (`shifted_pred_max_decay`); файл скопирован из `examples/ladder_opt_slope20_750/optimization_yzoom.gif`.*
+*Анимация: конфиг `examples/ladder_optimize.json` (750 шагов, `shifted_pred_max_decay`, `slope_db: 20`); после быстрого старта ниже тот же вид — `examples/ladder_run/optimization_yzoom.gif`. В `docs/assets/` лежит снимок этого прогона.*
 
 ---
 
@@ -65,19 +65,18 @@ python3 -m pip install -e .
 
 ```bash
 python3 -m xtal_filters target \
-  --config examples/ladder_10p696_10p702MHz.json \
-  --out examples/ladder_10p7MHz_out \
+  --config examples/ladder_ideal.json \
+  --out examples/ladder_target \
   --device cpu
 
 python3 -m xtal_filters optimize \
-  --config examples/ladder_nonideal_opt.json \
-  --target examples/ladder_10p7MHz_out/target.npz \
-  --out examples/my_run
+  --config examples/ladder_optimize.json \
+  --target examples/ladder_target/target.npz
 
 python3 scripts/rebuild_optimization_gif_yzoom.py \
-  --config examples/ladder_nonideal_opt.json \
-  --run-dir examples/my_run \
-  --save-final examples/my_run/final_yzoom.png
+  --config examples/ladder_optimize.json \
+  --run-dir examples/ladder_run \
+  --save-final examples/ladder_run/final_yzoom.png
 ```
 
 Используйте **`optimization.device`: `cpu` или `cuda`**.

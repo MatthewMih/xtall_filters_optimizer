@@ -1,9 +1,0 @@
-{
-  "circuit": "examples/ideal_filter.json",
-  "sweep": {
-    "f_min": 2000000.0,
-    "f_max": 8000000.0,
-    "num_points": 256,
-    "complex_dtype": "complex64"
-  }
-}

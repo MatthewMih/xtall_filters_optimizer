@@ -38,7 +38,7 @@ python3 -m pip install -r requirements.txt
 Запуск модулей предполагает, что текущая рабочая директория — корень проекта (или пакет установлен в окружение):
 
 ```bash
-cd /path/to/xtal_filters_optimizer
+cd /path/to/crystal-rf-filter-optimizer
 python3 -m xtal_filters --help
 ```
 
@@ -63,7 +63,7 @@ python3 -m xtal_filters --help
 
 Вспомогательный скрипт (не пакет): [`scripts/rebuild_optimization_gif_yzoom.py`](../scripts/rebuild_optimization_gif_yzoom.py) — пересборка GIF из `params_frames/` с узкой осью Y.
 
-Примеры схем: каталог [`examples/`](../examples/) (в т.ч. `ladder_10p696_10p702MHz.json` — идеальная лестница, `ladder_nonideal_opt.json` — неидеал с оптимизацией).
+Пример в каталоге [`examples/`](../examples/): **`ladder_ideal.json`** (эталон, \(R_m=0\)) и **`ladder_optimize.json`** (схема с потерями и секция `optimization`).
 
 ## Формат JSON схемы
 
@@ -236,66 +236,47 @@ python3 -m xtal_filters --help
 
 ## Командная строка
 
-Рабочая директория — корень репозитория (`cd /path/to/xtal_filters_optimizer`).
+Рабочая директория — корень репозитория (`cd /path/to/crystal-rf-filter-optimizer`).
 
-### Пример: лестничный фильтр ~10.7 MHz (эталон → оптимизация → yzoom)
+### Пример: лестница ~10.7 MHz (эталон → оптимизация с потерями → yzoom)
 
-**1. АЧХ идеального (эталонного) фильтра** — режим `target` пишет `target.npz` (частоты и dBm на нагрузке), график и метаданные:
+**1. Эталонная АЧХ** (`ladder_ideal.json`, в кварцах \(R_m=0\)) — режим `target`:
 
 ```bash
 python3 -m xtal_filters target \
-  --config examples/ladder_10p696_10p702MHz.json \
-  --out examples/ladder_10p7MHz_out \
+  --config examples/ladder_ideal.json \
+  --out examples/ladder_target \
   --device cpu
 ```
 
-В `examples/ladder_10p7MHz_out/`: `target.npz`, `target_plot.png`, `target_meta.json`.
+В `examples/ladder_target/`: `target.npz`, `target_plot.png`, `target_meta.json`.
 
-**2. Оптимизация неидеальной схемы** под этот эталон (в JSON заданы `optimization`, в т.ч. `loss_weighting`, `params_snapshot_every` для последующего yzoom):
+**2. Подгонка схемы с потерями** (`ladder_optimize.json`: обучаемые конденсаторы и \(R_\mathrm{port}\), фиксированные \(R_m,L_m,C_m,C_p\), `loss_weighting`, `params_snapshot_every` для yzoom):
 
 ```bash
 python3 -m xtal_filters optimize \
-  --config examples/ladder_nonideal_opt.json \
-  --target examples/ladder_10p7MHz_out/target.npz
+  --config examples/ladder_optimize.json \
+  --target examples/ladder_target/target.npz
 ```
 
-Каталог результата берётся из `optimization.output_dir` в JSON (сейчас `examples/ladder_opt_shifted_weights`), либо переопределите: `--out <каталог>`.
+По умолчанию артефакты в `optimization.output_dir` из JSON (`examples/ladder_run`), либо задайте `--out <каталог>`.
 
-**3. GIF и PNG с узкой осью Y** (верх ≈ max(идеальный target на сетке оптимизации) + запас, низ по умолчанию −20 dBm). Нужны `params_frames/step_*.json` (в конфиге должно быть `params_snapshot_every` > 0):
+**3. GIF / PNG с узкой осью Y** (нужны `params_frames/step_*.json`):
 
 ```bash
 python3 scripts/rebuild_optimization_gif_yzoom.py \
-  --config examples/ladder_nonideal_opt.json \
-  --run-dir examples/ladder_opt_shifted_weights \
-  --save-final examples/ladder_opt_shifted_weights/final_yzoom.png
+  --config examples/ladder_optimize.json \
+  --run-dir examples/ladder_run \
+  --save-final examples/ladder_run/final_yzoom.png
 ```
 
 По умолчанию GIF: `<run-dir>/optimization_yzoom.gif`. Параметры: `--y-bottom`, `--y-margin`, `--out-gif`, `--duration-ms`, `--device`.
 
-### Другой минимальный пример (два JSON из корня `examples/`)
+### Конвейер
 
-**Генерация target:**
-
-```bash
-python3 -m xtal_filters target --config examples/ideal_filter.json --out examples/target_run --device cpu
-```
-
-**Оптимизация:**
-
-```bash
-python3 -m xtal_filters optimize \
-  --config examples/nonideal_filter.json \
-  --target examples/target_run/target.npz \
-  --out examples/out_opt
-```
-
-Если не указать `--out`, используется `optimization.output_dir` из JSON.
-
-### Типичный конвейер
-
-1. JSON идеальной схемы → `target` → `target.npz` и график АЧХ.
-2. JSON схемы с обучаемыми параметрами и секцией `optimization` → `optimize` с путём к `target.npz`.
-3. При необходимости узкого масштаба по оси dBm — `rebuild_optimization_gif_yzoom.py` после прогона с сохранением `params_frames/`.
+1. `ladder_ideal.json` → `target` → `examples/ladder_target/target.npz`.  
+2. `ladder_optimize.json` → `optimize` с этим `target.npz` → `examples/ladder_run/`.  
+3. При необходимости — `rebuild_optimization_gif_yzoom.py` по каталогу прогона.
 
 ## Артефакты оптимизации (`output_dir`)
 
@@ -319,23 +300,15 @@ import torch
 from xtal_filters import ACAnalysis, generate_target_artifacts, run_optimization
 from xtal_filters.config import load_json
 
-cfg = load_json("examples/ideal_filter.json")
+cfg = load_json("examples/ladder_ideal.json")
 model = ACAnalysis(cfg, device=torch.device("cpu"))
-f = torch.linspace(2e6, 8e6, 256, dtype=torch.float64)
+f = torch.linspace(10.696e6, 10.702e6, 256, dtype=torch.float64)
 dbm = model(f)  # (n_freq,) dBm на нагрузке
 
-generate_target_artifacts("examples/ideal_filter.json", "examples/target_run")
+generate_target_artifacts("examples/ladder_ideal.json", "examples/ladder_target")
 
-cfg2 = load_json("examples/nonideal_filter.json")
-run_optimization(cfg2, "examples/target_run/target.npz", "examples/out_opt")
-
-# Лестничный пример (те же пути, что в CLI выше):
-# generate_target_artifacts("examples/ladder_10p696_10p702MHz.json", "examples/ladder_10p7MHz_out")
-# run_optimization(
-#     load_json("examples/ladder_nonideal_opt.json"),
-#     "examples/ladder_10p7MHz_out/target.npz",
-#     "examples/ladder_opt_shifted_weights",
-# )
+cfg2 = load_json("examples/ladder_optimize.json")
+run_optimization(cfg2, "examples/ladder_target/target.npz", "examples/ladder_run")
 ```
 
 ## Замечания
